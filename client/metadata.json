@@ -1,0 +1,8 @@
+
+{
+  "name": "Academia Pro: Study Analyst & Companion",
+  "description": "A comprehensive study management platform featuring GPA tracking, task prioritization, streak rewards, and a focused work mode with performance analysis powered by AI.",
+  "requestFramePermissions": [
+    "notifications"
+  ]
+}
