@@ -56,7 +56,16 @@ export const taskService = {
 export const subjectService = {
     getSubjects: async (userId: number): Promise<Subject[]> => {
         const res = await api.get(`/subjects?userId=${userId}`);
-        return res.data;
+        return res.data.map((s: any) => ({
+            ...s,
+            credit_hours: Number(s.credit_hours || 0),
+            marks: (s.marks || []).map((m: any) => ({
+                ...m,
+                score: Number(m.score || 0),
+                max_score: Number(m.max_score || 0),
+                weightage: Number(m.weightage || 0)
+            }))
+        }));
     },
     createSubject: async (data: { userId: number, name: string, credit_hours: number }) => {
         const res = await api.post('/subjects', data);
@@ -71,7 +80,12 @@ export const subjectService = {
 export const statsService = {
     getStats: async (userId: number): Promise<UserStats> => {
         const res = await api.get(`/stats?userId=${userId}`);
-        return res.data;
+        return {
+            ...res.data,
+            points: Number(res.data.points || 0),
+            target_gpa: Number(res.data.target_gpa || 4.0),
+            streak: Number(res.data.streak || 0)
+        };
     },
     logFocus: async (data: { userId: number, duration: number, points: number }) => {
         const res = await api.post('/stats/focus', data);

@@ -34,6 +34,9 @@ const Dashboard: React.FC<DashboardProps> = ({
   // Manual YYYY-MM-DD formatting for consistency
   const d = new Date();
   const today = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
+  console.log('[Dashboard] Props received:', { tasksCount: (tasks || []).length, subjectsCount: (subjects || []).length, targetGpa: stats.target_gpa });
+
   const todayTasks = (tasks || []).filter(t => t?.dueDate?.startsWith(today));
   const completedToday = todayTasks.filter(t => t.completed).length;
 
@@ -61,7 +64,10 @@ const Dashboard: React.FC<DashboardProps> = ({
       return (grade?.gpa || 0) * (s.credit_hours || 0);
     });
     const totalCredits = (subjects || []).reduce((acc, curr) => acc + (curr.credit_hours || 0), 0);
-    return totalCredits > 0 ? Number((gpas.reduce((a, b) => a + b, 0) / totalCredits).toFixed(2)) : 0;
+    const finalGpa = totalCredits > 0 ? Number((gpas.reduce((a, b) => a + b, 0) / totalCredits).toFixed(2)) : 0;
+
+    console.log('[Dashboard] GPA Calculated:', finalGpa, 'based on', subjects.length, 'subjects');
+    return finalGpa;
   }, [subjects]);
 
   const { nearestExam, upcomingExams } = useMemo(() => {
