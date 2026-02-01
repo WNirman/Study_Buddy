@@ -28,7 +28,7 @@ const DailyAnalysis: React.FC<DailyAnalysisProps> = ({ tasks, subjects }) => {
   }, [subjects, tasks]);
 
   const today = new Date().toISOString().split('T')[0];
-  const todayTasks = tasks.filter(t => t.dueDate.startsWith(today));
+  const todayTasks = (tasks || []).filter(t => t?.dueDate?.startsWith(today));
   const completedCount = todayTasks.filter(t => t.completed).length;
   // Type: completed is boolean now
   const missedCount = todayTasks.filter(t => !t.completed).length;

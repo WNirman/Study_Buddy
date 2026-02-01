@@ -25,8 +25,11 @@ export const taskService = {
         // Best to map it.
         return res.data.map((t: any) => ({
             ...t,
+            dueDate: t.due_date, // Map from backend snake_case
             completed: Boolean(t.completed),
             reminded: Boolean(t.reminded),
+            priority: t.priority || 'medium',
+            duration_minutes: t.duration_minutes || 60
         }));
     },
     createTask: async (task: Omit<Task, 'id'> & { userId: number }) => {
@@ -81,7 +84,8 @@ export const examService = {
         const res = await api.get(`/exams?userId=${userId}`);
         return res.data.map((e: any) => ({
             ...e,
-            subjectName: e.subject_name || 'N/A'
+            subjectName: e.subject_name || 'N/A',
+            date: e.date
         }));
     },
     createExam: async (data: { userId: number, subject_name: string, date: string, description?: string }) => {

@@ -16,11 +16,12 @@ const Profile: React.FC<ProfileProps> = ({ user, stats }) => {
     const daysInYear = Math.ceil((today.getTime() - startOfYear.getTime()) / (1000 * 60 * 60 * 24));
 
     const grid: any = {};
+    const hotplate = stats?.hotplate || [];
     for (let i = 0; i < daysInYear; i++) {
       const date = new Date(startOfYear);
       date.setDate(date.getDate() + i);
       const dateStr = date.toISOString().split('T')[0];
-      const activity = stats.hotplate.find(h => h.date === dateStr);
+      const activity = hotplate.find(h => h.date === dateStr);
       grid[dateStr] = activity?.count || 0;
     }
     return grid;
@@ -41,8 +42,8 @@ const Profile: React.FC<ProfileProps> = ({ user, stats }) => {
     <div className="space-y-10 animate-in fade-in duration-500">
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-gradient-to-r from-indigo-600 to-violet-600 text-white p-8 rounded-3xl shadow-lg shadow-indigo-200 dark:shadow-none">
         <div>
-          <h1 className="text-4xl font-bold">{user.username.charAt(0).toUpperCase() + user.username.slice(1)}</h1>
-          <p className="text-indigo-100 mt-2 capitalize">{user.student_type} Student</p>
+          <h1 className="text-4xl font-bold">{(user?.username?.charAt(0).toUpperCase() + user?.username?.slice(1)) || 'Student'}</h1>
+          <p className="text-indigo-100 mt-2 capitalize">{user?.student_type || 'Student'} Student</p>
         </div>
         <div className="flex gap-6">
           <div className="text-center">

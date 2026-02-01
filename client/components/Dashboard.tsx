@@ -34,7 +34,7 @@ const Dashboard: React.FC<DashboardProps> = ({
   // Manual YYYY-MM-DD formatting for consistency
   const d = new Date();
   const today = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-  const todayTasks = tasks.filter(t => t.dueDate.startsWith(today));
+  const todayTasks = (tasks || []).filter(t => t?.dueDate?.startsWith(today));
   const completedToday = todayTasks.filter(t => t.completed).length;
 
   const currentGpa = useMemo(() => {
@@ -52,15 +52,16 @@ const Dashboard: React.FC<DashboardProps> = ({
       // 30% ICA, 70% Final
       const total = (icaAvg * 0.3) + (final * 0.7);
       const grade = GPA_SCALE.find(g => total >= g.min);
-      return (grade?.gpa || 0) * s.credit_hours;
+      return (grade?.gpa || 0) * (s.credit_hours || 0);
     });
-    const totalCredits = subjects.reduce((acc, curr) => acc + curr.credit_hours, 0);
+    const totalCredits = (subjects || []).reduce((acc, curr) => acc + (curr.credit_hours || 0), 0);
     return totalCredits > 0 ? Number((gpas.reduce((a, b) => a + b, 0) / totalCredits).toFixed(2)) : 0;
   }, [subjects]);
 
   const { nearestExam, upcomingExams } = useMemo(() => {
-    const futureExams = [...exams]
-      .filter(e => new Date(e.date) > new Date())
+    const validExams = Array.isArray(exams) ? exams : [];
+    const futureExams = [...validExams]
+      .filter(e => e?.date && new Date(e.date) > new Date())
       .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
     return {
       nearestExam: futureExams[0],
@@ -81,7 +82,7 @@ const Dashboard: React.FC<DashboardProps> = ({
     <div className="space-y-8 animate-in fade-in duration-500">
       <header className="flex justify-between items-end">
         <div>
-          <h2 className="text-3xl font-black text-slate-950">Hello, {user.username.charAt(0).toUpperCase() + user.username.slice(1)}! 👋</h2>
+          <h2 className="text-3xl font-black text-slate-950">Hello, {(user?.username?.charAt(0).toUpperCase() + user?.username?.slice(1)) || 'Student'}! 👋</h2>
           <p className="text-slate-800 font-black">Ready to crush your study goals today?</p>
         </div>
         <button

@@ -17,8 +17,11 @@ export const getStudyAnalysis = async (subjects: Subject[], tasks: Task[]) => {
   `;
 
   try {
+    if (!import.meta.env.VITE_GEMINI_API_KEY || import.meta.env.VITE_GEMINI_API_KEY === 'YOUR_API_KEY_HERE') {
+      throw new Error("Missing Gemini API Key. Please add it to client/.env.local");
+    }
     const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
+      model: "gemini-1.5-flash",
       contents: prompt,
       config: {
         responseMimeType: "application/json",
