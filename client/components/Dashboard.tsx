@@ -47,10 +47,16 @@ const Dashboard: React.FC<DashboardProps> = ({
       const icaAvg = icas.length > 0 ? icaTotal / icas.length : 0;
 
       const finalExam = s.marks?.find(m => m.type === 'Exam');
-      const final = finalExam?.score || 0;
+      let total = 0;
 
-      // 30% ICA, 70% Final
-      const total = (icaAvg * 0.3) + (final * 0.7);
+      if (finalExam) {
+        // 30% ICA, 70% Final
+        total = (icaAvg * 0.3) + (finalExam.score * 0.7);
+      } else {
+        // If no final exam yet, treat ICA as 100% for a "running average"
+        total = icaAvg;
+      }
+
       const grade = GPA_SCALE.find(g => total >= g.min);
       return (grade?.gpa || 0) * (s.credit_hours || 0);
     });
@@ -153,7 +159,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                   stroke="#4f46e5"
                   strokeWidth="8"
                   strokeDasharray={364}
-                  strokeDashoffset={364 - (364 * (currentGpa / 4.0))}
+                  strokeDashoffset={364 - (364 * Math.min(1, currentGpa / (stats.target_gpa || 4.0)))}
                   strokeLinecap="round"
                 />
               </svg>
